@@ -28,6 +28,15 @@ def render_state(state_name, state_data, graph):
         if 'Default' in state_data:
             default_next_state = state_data['Default']
             graph.add_edge(state_name, default_next_state)
+    elif state_data['Type'] == 'Map':
+        graph.add_node(state_name, label=state_name, shape='ellipse')
+
+        # Render iterator and its next state
+        iterator_name = state_data['Iterator']
+        iterator_next_state = state_data['Next']
+        graph.add_node(iterator_name, shape='box')
+        graph.add_edge(state_name, iterator_name)
+        graph.add_edge(iterator_name, iterator_next_state)
     else:
         graph.add_node(state_name, label=state_name, shape='box')
 
@@ -39,6 +48,12 @@ def render_state(state_name, state_data, graph):
                 graph.add_node(error, shape='box')
                 graph.add_edge(state_name, error)
                 graph.add_edge(error, next_state)
+
+        # Handle fan-out scenarios
+        if 'Choices' in state_data and 'Default' not in state_data:
+            for choice in state_data['Choices']:
+                choice_next_state = choice['Next']
+                graph.add_edge(state_name, choice_next_state)
 
         if 'Next' in state_data:
             next_state = state_data['Next']
