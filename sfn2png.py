@@ -11,9 +11,20 @@ def render_state(state_name, state_data, graph):
             branch_states = branch['States']
             render_state(branch_start, branch_states[branch_start], graph)
             graph.add_edge(state_name, branch_start)
+    elif state_data['Type'] == 'Fail':
+        graph.add_node(state_name, label=state_name, shape='box', style='filled', fillcolor='red')
     else:
         graph.add_node(state_name, label=state_name, shape='box')
-        
+
+        # Handle Catch states
+        if 'Catch' in state_data:
+            for catch_block in state_data['Catch']:
+                error = catch_block['Error']
+                next_state = catch_block['Next']
+                graph.add_node(error, shape='box')
+                graph.add_edge(state_name, error)
+                graph.add_edge(error, next_state)
+
         if 'Next' in state_data:
             next_state = state_data['Next']
             graph.add_edge(state_name, next_state)
