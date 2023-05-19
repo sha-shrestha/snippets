@@ -1,0 +1,85 @@
+To create a React application that utilizes the `aws-sfn-graph` library to take user input and render a PNG, you can follow these steps:
+
+1. Set up a new React project by running the following command in your terminal:
+```
+npx create-react-app aws-sfn-graph-demo
+```
+
+2. Navigate to the project directory:
+```
+cd aws-sfn-graph-demo
+```
+
+3. Install the required dependencies by running:
+```
+npm install aws-sfn-graph
+```
+
+4. Create a new file called `GraphRenderer.js` in the `src` directory. This file will contain the code for rendering the PNG using the `aws-sfn-graph` library. Add the following code to the file:
+
+```jsx
+import React, { useState } from 'react';
+import { renderGraph } from 'aws-sfn-graph';
+
+const GraphRenderer = () => {
+  const [graphText, setGraphText] = useState('');
+  const [pngUrl, setPngUrl] = useState('');
+
+  const handleInputChange = (event) => {
+    setGraphText(event.target.value);
+  };
+
+  const handleRenderClick = () => {
+    const pngDataUrl = renderGraph(graphText, 'png');
+    setPngUrl(pngDataUrl);
+  };
+
+  return (
+    <div>
+      <textarea
+        value={graphText}
+        onChange={handleInputChange}
+        placeholder="Enter the graph definition"
+        rows={10}
+      />
+
+      <button onClick={handleRenderClick}>Render PNG</button>
+
+      {pngUrl && <img src={pngUrl} alt="Rendered Graph" />}
+    </div>
+  );
+};
+
+export default GraphRenderer;
+```
+
+5. Open the `src/App.js` file and replace its content with the following code:
+
+```jsx
+import React from 'react';
+import GraphRenderer from './GraphRenderer';
+
+const App = () => {
+  return (
+    <div>
+      <h1>AWS SFN Graph Renderer</h1>
+      <GraphRenderer />
+    </div>
+  );
+};
+
+export default App;
+```
+
+6. Open the `src/index.js` file and remove the service worker code (if present) to simplify the setup.
+
+7. Start the React development server by running the following command in your terminal:
+```
+npm start
+```
+
+8. Open your web browser and visit `http://localhost:3000` to see the application in action. You will find a textarea where you can enter the graph definition. After entering the definition, click the "Render PNG" button, and the rendered graph PNG will appear below.
+
+Note: This example assumes you have prior knowledge of how to define the graph using the `aws-sfn-graph` library. You need to provide a valid graph definition in the textarea for the rendering to work correctly.
+
+That's it! You have now created a React application that uses the `aws-sfn-graph` library to take user input and render a PNG.
