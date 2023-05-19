@@ -33,10 +33,13 @@ def render_state(state_name, state_data, graph):
 
         # Render iterator and its next state
         iterator_name = state_data['Iterator']
+        iterator_start_state = state_data['StartAt']
         iterator_next_state = state_data['Next']
         graph.add_node(iterator_name, shape='box')
         graph.add_edge(state_name, iterator_name)
-        graph.add_edge(iterator_name, iterator_next_state)
+        graph.add_edge(iterator_name, iterator_start_state)
+        render_state(iterator_start_state, state_data['States'][iterator_start_state], graph)
+        graph.add_edge(iterator_start_state, iterator_next_state)
     else:
         graph.add_node(state_name, label=state_name, shape='box')
 
