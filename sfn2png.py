@@ -13,6 +13,21 @@ def render_state(state_name, state_data, graph):
             graph.add_edge(state_name, branch_start)
     elif state_data['Type'] == 'Fail':
         graph.add_node(state_name, label=state_name, shape='box', style='filled', fillcolor='red')
+    elif state_data['Type'] == 'Choice':
+        graph.add_node(state_name, label=state_name, shape='diamond')
+
+        # Render choice conditions and their next states
+        for choice in state_data['Choices']:
+            choice_condition = choice['Condition']
+            choice_next_state = choice['Next']
+            graph.add_node(choice_condition, shape='box')
+            graph.add_edge(state_name, choice_condition)
+            graph.add_edge(choice_condition, choice_next_state)
+        
+        # Render default state if provided
+        if 'Default' in state_data:
+            default_next_state = state_data['Default']
+            graph.add_edge(state_name, default_next_state)
     else:
         graph.add_node(state_name, label=state_name, shape='box')
 
